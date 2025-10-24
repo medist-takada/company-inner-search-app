@@ -42,20 +42,26 @@ def display_initial_ai_message():
     """
     with st.chat_message("assistant"):
         # 「st.success()」とすると緑枠で表示される
-        st.markdown("こんにちは。私は社内文書の情報をもとに回答する生成AIチャットボットです。上記で利用目的を選択し、画面下部のチャット欄からメッセージを送信してください。")
+        st.success("こんにちは。私は社内文書の情報をもとに回答する生成AIチャットボットです。上記で利用目的を選択し、画面下部のチャット欄からメッセージを送信してください。")
+        st.warning("⚠ 具体的に入力したほうが期待通りの回答を得やすいです。")
 
-        # 「社内文書検索」の機能説明
-        st.markdown("**【「社内文書検索」を選択した場合】**")
-        # 「st.info()」を使うと青枠で表示される
-        st.info("入力内容と関連性が高い社内文書のありかを検索できます。")
-        # 「st.code()」を使うとコードブロックの装飾で表示される
-        # 「wrap_lines=True」で折り返し設定、「language=None」で非装飾とする
-        st.code("【入力例】\n社員の育成方針に関するMTGの議事録", wrap_lines=True, language=None)
 
-        # 「社内問い合わせ」の機能説明
-        st.markdown("**【「社内問い合わせ」を選択した場合】**")
-        st.info("質問・要望に対して、社内文書の情報をもとに回答を得られます。")
-        st.code("【入力例】\n人事部に所属している従業員情報を一覧化して", wrap_lines=True, language=None)
+def display_function_explanation():
+    """
+    各機能の説明表示
+    """
+    # 「社内文書検索」の機能説明
+    st.markdown("**【「社内文書検索」を選択した場合】**")
+    # 「st.info()」を使うと青枠で表示される
+    st.info("入力内容と関連性が高い社内文書のありかを検索できます。")
+    # 「st.code()」を使うとコードブロックの装飾で表示される
+    # 「wrap_lines=True」で折り返し設定、「language=None」で非装飾とする
+    st.code("【入力例】\n社員の育成方針に関するMTGの議事録", wrap_lines=True, language=None)
+
+    # 「社内問い合わせ」の機能説明
+    st.markdown("**【「社内問い合わせ」を選択した場合】**")
+    st.info("質問・要望に対して、社内文書の情報をもとに回答を得られます。")
+    st.code("【入力例】\n人事部に所属している従業員情報を一覧化して", wrap_lines=True, language=None)
 
 
 def display_conversation_log():
@@ -160,7 +166,10 @@ def display_search_llm_response(llm_response):
             # ページ番号を取得
             main_page_number = llm_response["context"][0].metadata["page"]
             # 「メインドキュメントのファイルパス」と「ページ番号」を表示
-            st.success(f"{main_file_path}", icon=icon)
+            if main_file_path.lower().endswith(('.pdf')):
+                st.success(f"{main_file_path} （ページ No.{main_page_number + 1}）", icon=icon)
+            else:
+                st.success(f"{main_file_path}", icon=icon)
         else:
             # 「メインドキュメントのファイルパス」を表示
             st.success(f"{main_file_path}", icon=icon)
@@ -216,7 +225,10 @@ def display_search_llm_response(llm_response):
                 # ページ番号が取得できない場合のための分岐処理
                 if "page_number" in sub_choice:
                     # 「サブドキュメントのファイルパス」と「ページ番号」を表示
-                    st.info(f"{sub_choice['source']}", icon=icon)
+                    if sub_choice['source'].lower().endswith(('.pdf')):
+                        st.info(f"{sub_choice['source']} （ページ No.{sub_choice['page_number'] + 1}）", icon=icon)
+                    else:
+                        st.info(f"{sub_choice['source']}", icon=icon)
                 else:
                     # 「サブドキュメントのファイルパス」を表示
                     st.info(f"{sub_choice['source']}", icon=icon)
@@ -296,7 +308,10 @@ def display_contact_llm_response(llm_response):
                 # ページ番号を取得
                 page_number = document.metadata["page"]
                 # 「ファイルパス」と「ページ番号」
-                file_info = f"{file_path}"
+                if file_path.lower().endswith(('.pdf')):
+                    file_info = f"{file_path} （ページ No.{page_number + 1}）"
+                else:
+                    file_info = f"{file_path}"
             else:
                 # 「ファイルパス」のみ
                 file_info = f"{file_path}"

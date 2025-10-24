@@ -60,7 +60,14 @@ if not "initialized" in st.session_state:
 cn.display_app_title()
 
 # モード表示
-cn.display_select_mode()
+# cn.display_select_mode()
+
+# サイドバーを表示し、モード選択を受け付ける
+with st.sidebar:
+    st.header(ct.SIDEBAR_HEADER_TEXT)
+    cn.display_select_mode()
+    st.divider()
+    cn.display_function_explanation()
 
 # AIメッセージの初期表示
 cn.display_initial_ai_message()
