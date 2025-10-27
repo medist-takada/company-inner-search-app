@@ -42,8 +42,8 @@ APP_BOOT_MESSAGE = "アプリが起動されました。"
 # ==========================================
 MODEL = "gpt-4o-mini"
 TEMPERATURE = 0.5
-CHUNK_SIZE = 500
-CHUNK_OVERLAP = 50
+CHUNK_SIZE = 1500
+CHUNK_OVERLAP = 200
 
 # ==========================================
 # RAG参照用のデータソース系

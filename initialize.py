@@ -222,46 +222,40 @@ def file_load(path, docs_all):
         if file_extension == ".csv":
             df = pd.read_csv(path)
             df.fillna("", inplace=True)  # 欠損値を空文字で埋める
-
+            
             # 【問題６】
             # 全社員の名簿情報をまとめたドキュメントを作成
-            # 人事部のデータ2,3人分しか取得できなかったため、
-            # 部署ごとにドキュメントをまとめる
-            # こちらも２，３人分しか取得できませんでした。。。
-            grouped = df.groupby("部署")
-            for dept, group in grouped:
-                all_texts = []  # 各部署の情報を格納するリスト
-                all_texts.append(f"部署: {dept}\n")
-                all_texts.append("この部署には以下の従業員が所属しています。\n\n")
+            all_texts = []  # 全社員の情報を格納するリスト
+            all_texts.append("◆全社員名簿情報\n\n")
 
-                for i, (_, row) in enumerate(group.iterrows(), 1):
-                    emp_text = []   # 各社員の情報を格納するリスト
-                    emp_text.append(f"◆社員情報 {i}\n")
-                    emp_text.append(f"社員ID: {row['社員ID']}\n")
-                    emp_text.append(f"氏名: {row['氏名（フルネーム）']}\n")
-                    emp_text.append(f"生年月日: {row['生年月日']}\n")
-                    emp_text.append(f"性別: {row['性別']}\n")
-                    emp_text.append(f"年齢: {row['年齢']}\n")
-                    emp_text.append(f"メールアドレス: {row['メールアドレス']}\n")
-                    emp_text.append(f"従業員区分: {row['従業員区分']}\n")
-                    emp_text.append(f"入社日: {row['入社日']}\n")
-                    emp_text.append(f"部署: {row['部署']}\n")
-                    emp_text.append(f"役職: {row['役職']}\n")
-                    emp_text.append(f"スキルセット: {row['スキルセット']}\n")
-                    emp_text.append(f"保有資格: {row['保有資格']}\n")
-                    emp_text.append(f"学歴: {row['大学名']} {row['学部・学科']} 卒業（{row['卒業年月日']}）\n")
-                    emp_text.append("-" * 40 + "\n\n")
+            for i, (_, row) in enumerate(df.iterrows(), 1):
+                emp_text = []   # 各社員の情報を格納するリスト
+                emp_text.append(f"◆社員情報 {i}\n")
+                emp_text.append(f"社員ID: {row['社員ID']}\n")
+                emp_text.append(f"氏名: {row['氏名（フルネーム）']}\n")
+                emp_text.append(f"生年月日: {row['生年月日']}\n")
+                emp_text.append(f"性別: {row['性別']}\n")
+                emp_text.append(f"年齢: {row['年齢']}\n")
+                emp_text.append(f"メールアドレス: {row['メールアドレス']}\n")
+                emp_text.append(f"従業員区分: {row['従業員区分']}\n")
+                emp_text.append(f"入社日: {row['入社日']}\n")
+                emp_text.append(f"部署: {row['部署']}\n")
+                emp_text.append(f"役職: {row['役職']}\n")
+                emp_text.append(f"スキルセット: {row['スキルセット']}\n")
+                emp_text.append(f"保有資格: {row['保有資格']}\n")
+                emp_text.append(f"学歴: {row['大学名']} {row['学部・学科']} 卒業（{row['卒業年月日']}）\n")
+                emp_text.append("-" * 40 + "\n\n")
 
-                    all_texts.append("".join(emp_text)) # 各社員の情報をまとめて追加
+                all_texts.append("".join(emp_text)) # 各社員の情報をまとめて追加
 
-                combined_text = "".join(all_texts)
-                # 部署ごとにドキュメントオブジェクトを作成し、メタデータを設定
-                combined_doc = LC_Document(
-                    page_content=combined_text,
-                    metadata={"source": f"{file_name} - 部署: {dept}"}
-                )
+            combined_text = "".join(all_texts)
 
-                docs_all.append(combined_doc)   # 追加したドキュメントをリストに格納
+            # 全社員ドキュメントを作成し、メタデータを設定
+            combined_doc = LC_Document(
+                page_content=combined_text,
+                metadata={"source": file_name}
+            )
+            docs_all.append(combined_doc)   # 追加したドキュメントをリストに格納
 
             return
 
